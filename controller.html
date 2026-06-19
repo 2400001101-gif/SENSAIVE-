@@ -3,132 +3,116 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensaive Tier 1 - Hardware Simulator</title>
+    <title>Sensaive Tier 1 - Hardware Controller</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap');
-        body { font-family: 'Space Grotesk', sans-serif; background: #070B19; color: #E2E8F0; padding: 25px; max-width: 680px; margin: 0 auto; }
-        .brand { font-size: 24px; font-weight: 700; color: #38BDF8; text-align: center; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px; }
-        .sub-brand { text-align: center; font-size: 13px; color: #64748B; margin-bottom: 25px; }
-        .card { background: #0F172A; border: 1px solid #1E293B; border-radius: 16px; padding: 20px; margin-bottom: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); }
-        h3 { font-size: 14px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
-        .grid-sliders { display: flex; flex-direction: column; gap: 15px; }
-        .slider-box { background: #1E293B; padding: 12px 16px; border-radius: 10px; }
-        .flex-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
-        .val-num { color: #38BDF8; font-size: 16px; font-weight: 700; }
-        input[type="range"] { width: 100%; accent-color: #38BDF8; cursor: pointer; margin-top: 5px; }
-        input[type="text"] { width: 100%; padding: 10px; background: #070B19; border: 1px solid #334155; color: #FFF; border-radius: 8px; margin-top: 5px; font-family: monospace; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; text-transform: uppercase; transition: all 0.2s ease; margin-top: 8px; }
-        .btn-green { background: #10B981; color: white; }
-        .btn-yellow { background: #F59E0B; color: white; }
-        .btn-red { background: #EF4444; color: white; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4); animation: pulseRed 2s infinite; }
-        .stream-status { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; color: #10B981; margin-top: 15px; font-weight: 600; }
-        .dot-blink { width: 8px; height: 8px; background: #10B981; border-radius: 50%; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
-        @keyframes pulseRed { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
+        body { font-family: Arial, sans-serif; background: #0b1329; color: #f1f5f9; padding: 20px; max-width: 500px; margin: 0 auto; }
+        h2 { text-align: center; color: #38bdf8; }
+        .card { background: #1c2541; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #3a506b; }
+        label { display: block; font-size: 13px; font-weight: bold; margin-bottom: 5px; color: #94a3b8; }
+        .flex-row { display: flex; justify-content: space-between; align-items: center; }
+        .val { font-size: 18px; font-weight: bold; color: #38bdf8; }
+        input[type="range"] { width: 100%; margin-top: 5px; accent-color: #38bdf8; cursor: pointer; }
+        input[type="text"] { width: 100%; padding: 8px; background: #0b1329; border: 1px solid #3a506b; color: white; border-radius: 6px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 5px; text-transform: uppercase; }
+        .btn-1 { background: #10b981; color: white; }
+        .btn-2 { background: #f59e0b; color: white; }
+        .btn-3 { background: #ef4444; color: white; }
     </style>
 </head>
 <body>
 
-    <div class="brand">🧬 Sensaive Core</div>
-    <div class="sub-brand">Tầng thiết bị đeo Tier 1 - Giả lập hệ điều hành Sensaive RTOS</div>
+    <h2>🧬 Sensaive Tier 1 Controller</h2>
+    <p style="text-align: center; font-size: 12px; color: #64748b; margin-bottom: 20px;">Trạm phát tín hiệu sinh hiệu Realtime</p>
 
     <div class="card">
-        <h3>🚨 Điều hướng phân loại nguy cơ (3 cấp độ Triage)</h3>
-        <button class="btn btn-green" onclick="simulateTriage(1)">🟢 Cấp 1: Thiết lập trạng thái bình thường (Wellness)</button>
-        <button class="btn btn-yellow" onclick="simulateTriage(2)">🟡 Cấp 2: Kích hoạt cảnh báo sinh hiệu bất thường</button>
-        <button class="btn btn-red" onclick="simulateTriage(3)">🚨 Cấp 3: Giả lập sự cố té ngã nguy kịch (Gọi 115)</button>
+        <label>🚨 ĐIỀU HƯỚNG CẤP ĐỘ TRIAGE</label>
+        <button class="btn btn-1" id="btn-triage-1">🟢 Cấp 1: Bình Thường</button>
+        <button class="btn btn-2" id="btn-triage-2">🟡 Cấp 2: Bất Thường (Nghi Ngờ)</button>
+        <button class="btn btn-3" id="btn-triage-3">🔴 Cấp 3: Té Ngã Nguy Kịch (115)</button>
     </div>
 
     <div class="card">
-        <h3>📊 Cảm biến sinh hiệu nền (Realtime 24/7 Data Stream)</h3>
-        <div class="grid-sliders">
-            <div class="slider-box">
-                <div class="flex-row flex-label"><span>Nhịp tim nền (Heart Rate)</span><span class="val-num" id="txt-hr">75 BPM</span></div>
-                <input type="range" id="input-hr" min="40" max="160" value="75" oninput="updateHardwareData()">
-            </div>
-            <div class="slider-box">
-                <div class="flex-row flex-label"><span>Nồng độ Oxy trong máu (SpO2)</span><span class="val-num" id="txt-spo2">98 %</span></div>
-                <input type="range" id="input-spo2" min="75" max="100" value="98" oninput="updateHardwareData()">
-            </div>
-            <div class="slider-box">
-                <div class="flex-row flex-label"><span>Tần số nhịp thở cơ bản (Respiratory Rate)</span><span class="val-num" id="txt-rr">16 lần/phút</span></div>
-                <input type="range" id="input-rr" min="8" max="38" value="16" oninput="updateHardwareData()">
-            </div>
-            <div class="slider-box">
-                <div class="flex-row flex-label"><span>Nhiệt độ cơ thể (°C)</span><span class="val-num" id="txt-temp">36.7 °C</span></div>
-                <input type="range" id="input-temp" min="34.5" max="41.0" step="0.1" value="36.7" oninput="updateHardwareData()">
-            </div>
-            <div class="slider-box">
-                <div class="flex-row flex-label"><span>Huyết áp động mạch (Blood Pressure)</span></div>
-                <input type="text" id="input-bp" value="120/80" onchange="updateHardwareData()">
-            </div>
-        </div>
-        <div class="stream-status"><div class="dot-blink"></div> Sensaive RTOS đang liên thông gói dữ liệu lên Tier 2...</div>
+        <div class="flex-row"><label>Nhịp tim (Heart Rate)</label><span class="val" id="lbl-hr">75 BPM</span></div>
+        <input type="range" id="range-hr" min="40" max="150" value="75">
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-    <script>
-        // QUAN TRỌNG: Thay link Realtime Database của chính bạn vào đây để liên thông dữ liệu!
-        const firebaseConfig = { databaseURL: "https://sensaive-huit-default-rtdb.firebaseio.com/" };
-        firebase.initializeApp(firebaseConfig);
-        const refNode = firebase.database().ref("sensaive_hub");
+    <div class="card">
+        <div class="flex-row"><label>Nồng độ Oxy (SpO2)</label><span class="val" id="lbl-spo2">98 %</span></div>
+        <input type="range" id="range-spo2" min="80" max="100" value="98">
+    </div>
 
-        function updateHardwareData() {
-            let hr = parseInt(document.getElementById("input-hr").value);
-            let spo2 = parseInt(document.getElementById("input-spo2").value);
-            let rr = parseInt(document.getElementById("input-rr").value);
-            let temp = parseFloat(document.getElementById("input-temp").value);
-            let bp = document.getElementById("input-bp").value;
+    <div class="card">
+        <div class="flex-row"><label>Huyết áp (Blood Pressure)</label></div>
+        <input type="text" id="val-bp" value="120/80">
+    </div>
 
-            document.getElementById("txt-hr").innerText = hr + " BPM";
-            document.getElementById("txt-spo2").innerText = spo2 + " %";
-            document.getElementById("txt-rr").innerText = rr + " lần/phút";
-            document.getElementById("txt-temp").innerText = temp + " °C";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-            refNode.update({
+        // Tích hợp thông tin tài khoản Firebase thật của bạn
+        const firebaseConfig = {
+            apiKey: "AIzaSyCbaNZMLJqsH1W3VAa81GaaY7ocaTbZeqw",
+            authDomain: "sensaive-demo.firebaseapp.com",
+            databaseURL: "https://sensaive-demo-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "sensaive-demo",
+            storageBucket: "sensaive-demo.firebasestorage.app",
+            messagingSenderId: "289646147734",
+            appId: "1:289646147734:web:c13d029f86dbc5181ceab7"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        let currentLvl = 1;
+
+        // Hàm đẩy dữ liệu đồng bộ lên Firebase
+        function sendData() {
+            let hr = parseInt(document.getElementById("range-hr").value);
+            let spo2 = parseInt(document.getElementById("range-spo2").value);
+            let bp = document.getElementById("val-bp").value;
+
+            document.getElementById("lbl-hr").innerText = hr + " BPM";
+            document.getElementById("lbl-spo2").innerText = spo2 + " %";
+
+            set(ref(db, "sensaive_data"), {
                 heartRate: hr,
                 spo2: spo2,
-                respiratoryRate: rr,
-                temperature: temp,
                 bloodPressure: bp,
+                triageLevel: currentLvl,
+                isFall: currentLvl === 3 ? true : false,
                 timestamp: Date.now()
             });
         }
 
-        function simulateTriage(level) {
-            if (level === 1) {
-                document.getElementById("input-hr").value = 75;
-                document.getElementById("input-spo2").value = 98;
-                document.getElementById("input-rr").value = 16;
-                document.getElementById("input-temp").value = 36.7;
-                document.getElementById("input-bp").value = "120/80";
-                updateHardwareData();
-                refNode.update({ triageLevel: 1, triggerVoice: "", isFall: false });
-            } 
-            else if (level === 2) {
-                document.getElementById("input-hr").value = 112;
-                document.getElementById("input-spo2").value = 93;
-                document.getElementById("input-rr").value = 24;
-                updateHardwareData();
-                refNode.update({ 
-                    triageLevel: 2, 
-                    isFall: false,
-                    triggerVoice: "Hệ thống ghi nhận chỉ số sinh hiệu vượt ngưỡng an toàn lâm sàng. Đang đồng bộ hóa trạng thái Triage cấp độ hai. Yêu cầu bác sĩ trực rà soát bệnh án điện tử." 
-                });
-            } 
-            else if (level === 3) {
-                refNode.update({
-                    triageLevel: 3,
-                    isFall: true,
-                    heartRate: 142,
-                    spo2: 86,
-                    respiratoryRate: 28,
-                    triggerVoice: "Cảnh báo khẩn cấp cấp độ ba. Gia tốc kế ghi nhận va chạm biến thiên đột ngột bốn chấm năm G. Bệnh nhân Nguyễn Văn Minh bị té ngã bất tỉnh. Hệ thống Sensaive đang tự động điều phối xe cấp cứu mười một năm và kích hoạt mạng lưới hiệp sĩ y tế thực địa.",
-                    fhirStatus: "KÍCH HOẠT SOS - TRUYỀN PAYLOAD HL7 FHIR LÊN TỔNG ĐÀI 115 THÀNH CÔNG"
-                });
+        // Lắng nghe sự kiện kéo thanh trượt
+        document.getElementById("range-hr").addEventListener("input", sendData);
+        document.getElementById("range-spo2").addEventListener("input", sendData);
+        document.getElementById("val-bp").addEventListener("change", sendData);
+
+        // Hàm chuyển đổi cấp độ Triage nhanh
+        function changeTriage(lvl) {
+            currentLvl = lvl;
+            if(lvl === 1) {
+                document.getElementById("range-hr").value = 75;
+                document.getElementById("range-spo2").value = 98;
+                document.getElementById("val-bp").value = "120/80";
+            } else if(lvl === 2) {
+                document.getElementById("range-hr").value = 115;
+                document.getElementById("range-spo2").value = 92;
+            } else if(lvl === 3) {
+                document.getElementById("range-hr").value = 140;
+                document.getElementById("range-spo2").value = 85;
             }
+            sendData();
         }
+
+        // Đăng ký sự kiện click cho các nút bấm
+        document.getElementById("btn-triage-1").addEventListener("click", () => changeTriage(1));
+        document.getElementById("btn-triage-2").addEventListener("click", () => changeTriage(2));
+        document.getElementById("btn-triage-3").addEventListener("click", () => changeTriage(3));
+
+        // Khởi động trạng thái mặc định
+        changeTriage(1);
     </script>
 </body>
 </html>
