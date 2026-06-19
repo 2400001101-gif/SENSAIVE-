@@ -3,234 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensaive - Hệ Sinh Thái Y Tế Số</title>
+    <title>Sensaive Tier 2 - Digital Nursing Interface</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
         :root {
-            --bg-color: #F4F7F6;
-            --card-bg: #FFFFFF;
-            --text-main: #1A2E26;
-            --text-sub: #677D75;
-            --primary: #0052CC;
-            --safe: #10B981;
-            --danger: #EF4444;
-            --warning: #F59E0B;
+            --bg: #F8FAFC;
+            --card: #FFFFFF;
+            --txt: #0F172A;
+            --sub: #64748B;
+            --p1: #10B981; /* Cấp 1: Xanh - Wellness */
+            --p2: #F59E0B; /* Cấp 2: Vàng - Nghi ngờ */
+            --p3: #EF4444; /* Cấp 3: Đỏ - Nguy kịch 115 */
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding: 15px; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .logo { font-weight: 700; font-size: 22px; color: var(--primary); display: flex; align-items: center; gap: 5px; }
-        .status-badge { padding: 6px 12px; background: rgba(16, 185, 129, 0.1); color: var(--safe); border-radius: 20px; font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 5px; }
+        body { background-color: var(--bg); color: var(--txt); padding: 15px; min-height: 100vh; padding-bottom: 50px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 15px; border-radius: 14px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .app-title { font-weight: 700; font-size: 20px; color: #0284C7; display: flex; align-items: center; gap: 6px; }
+        .badge-status { padding: 6px 14px; border-radius: 30px; font-weight: 700; font-size: 11px; text-transform: uppercase; color: #FFF; transition: background 0.3s ease; }
         
-        .patient-card { background: var(--card-bg); padding: 15px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); margin-bottom: 15px; }
-        .patient-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; font-size: 13px; }
-        .info-tag { background: #F0F4F8; padding: 6px; border-radius: 8px; color: var(--text-sub); }
-        .info-tag strong { color: var(--text-main); }
-        .medical-notes { margin-top: 10px; padding: 8px; background: #FFF3CD; border-left: 4px solid var(--warning); border-radius: 4px; font-size: 12px; }
+        /* Thông tin bệnh nhân & Tiền sử dị ứng */
+        .patient-box { background: var(--card); padding: 16px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 15px; position: relative; }
+        .p-meta { display: flex; gap: 10px; margin-top: 8px; font-size: 12px; }
+        .meta-pill { background: #F1F5F9; padding: 4px 10px; border-radius: 6px; color: var(--sub); font-weight: 600; }
+        .allergy-alert { margin-top: 10px; background: #FFF9E6; border-left: 4px solid var(--p2); padding: 10px; border-radius: 4px; font-size: 12px; line-height: 1.5; }
 
-        .vitals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        .vital-card { background: var(--card-bg); padding: 15px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); position: relative; border: 1px solid #E2E8F0; }
-        .vital-card.alert { border-color: var(--danger); background: #FEF2F2; animation: pulse 1.5s infinite; }
-        .vital-title { font-size: 12px; color: var(--text-sub); font-weight: 600; text-transform: uppercase; }
-        .vital-value { font-size: 26px; font-weight: 700; margin: 5px 0; color: #0F172A; }
-        .vital-unit { font-size: 12px; color: var(--text-sub); }
-        .vital-icon { position: absolute; right: 12px; top: 12px; font-size: 18px; }
+        /* Dashboard xử lý sinh hiệu đồ họa nâng cao của Tier 2 */
+        .vitals-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .v-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #E2E8F0; position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .v-card.warn { border-color: var(--p2); background: #FFFDF5; }
+        .v-card.danger { border-color: var(--p3); background: #FEF2F2; animation: flashCard 1.5s infinite; }
+        .v-title { font-size: 11px; font-weight: 700; color: var(--sub); text-transform: uppercase; letter-spacing: 0.5px; }
+        .v-value { font-size: 28px; font-weight: 700; margin: 4px 0; color: var(--txt); }
+        .v-unit { font-size: 11px; color: var(--sub); }
+        .v-icon { position: absolute; right: 12px; top: 12px; font-size: 18px; }
 
-        .feature-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 600; font-size: 14px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-knight { background: #8B5CF6; }
-        
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
-        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 100%; max-width: 400px; position: relative; }
-        .close-btn { position: absolute; right: 15px; top: 15px; font-size: 20px; cursor: pointer; }
-        
-        #sos-screen { display: none; position: fixed; top:0; left:0; width:100vw; height:100vh; background: var(--danger); color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
-        #sos-screen h1 { font-size: 36px; margin-bottom: 20px; animation: blink 1s infinite; }
-        
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+        /* Tác vụ xử lý đồ họa nặng mô phỏng (ECG & Quang phổ học NIR chỉ chạy trên Tier 2) */
+        .heavy-computation-box { background: #0F172A; color: #38BDF8; padding: 15px; border-radius: 16px; margin-bottom: 15px; }
+        .graph-title { font-size: 11px; text-transform: uppercase; color: #94A3B8; font-weight: 700; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .canvas-sim { width: 100%; height: 50px; border-bottom: 1px dashed #334155; position: relative; overflow: hidden; }
+        .ecg-line { width: 100%; height: 2px; background: #10B981; position: absolute; top: 50%; animation: ecgMove 2s linear infinite; }
+        .spectro-bars { display: flex; gap: 3px; align-items: flex-end; height: 40px; margin-top: 5px; }
+        .spec-bar { flex: 1; background: #6D28D9; height: 40%; animation: pulseBar 0.8s ease-in-out infinite alternate; }
+        .spec-bar:nth-child(even) { background: #38BDF8; animation-duration: 0.5s; }
 
-        .radar-box { width: 140px; height: 140px; border-radius: 50%; border: 2px solid #8B5CF6; margin: 20px auto; position: relative; background: #F3E8FF; overflow: hidden; }
-        .radar-sweep { width: 100%; height: 100%; background: linear-gradient(90deg, rgba(139,92,246,0.4) 0%, rgba(139,92,246,0) 50%); position: absolute; transform-origin: center; animation: rotate 3s linear infinite; }
-        .knight-dot { width: 10px; height: 10px; background: #7C3AED; border-radius: 50%; position: absolute; animation: blink 1s infinite; }
-        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        /* Các nút tương tác hệ thống số Sensaive */
+        .btn-action { width: 100%; padding: 14px; background: #0F172A; color: white; border: none; border-radius: 12px; font-weight: 600; font-size: 13px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
+        .btn-blue { background: #0284C7; }
+        
+        /* Cấu trúc Popups mã hóa */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+        .modal-body { background: white; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; position: relative; animation: popUp 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .close-icon { position: absolute; right: 15px; top: 15px; font-size: 20px; cursor: pointer; color: var(--sub); }
+        pre { background: #0F172A; color: #38BDF8; padding: 12px; border-radius: 8px; font-size: 11px; overflow-x: auto; max-height: 250px; text-align: left; margin-top: 10px; }
+
+        /* MÀN HÌNH KHÓA SOS TOÀN DIỆN CẤP ĐỘ 3 - GỌI 115 & ĐỊNH VỊ HIỆP SĨ */
+        #triage-level3-screen { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--p3); color: white; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; }
+        #triage-level3-screen h1 { font-size: 42px; font-weight: 800; animation: flashText 0.8s infinite; letter-spacing: 1px; }
+        .sos-status-panel { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); padding: 15px; border-radius: 12px; font-size: 13px; margin-top: 20px; max-width: 90%; line-height: 1.6; }
+        
+        @keyframes flashCard { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 50% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); } }
+        @keyframes ecgMove { 0% { transform: translateX(-100%) scaleY(1); } 50% { transform: translateX(0%) scaleY(2); } 100% { transform: translateX(100%) scaleY(1); } }
+        @keyframes pulseBar { from { height: 20%; } to { height: 100%; } }
+        @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes flashText { 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo">🧬 Sensaive</div>
-        <div id="global-status" class="status-badge">🟢 An toàn</div>
+    <div class="top-bar">
+        <div class="app-title">🩺 Sensaive Core</div>
+        <div id="triage-badge" class="badge-status" style="background: var(--p1);">CẤP 1: BIỂU MẪU SỨC KHỎE ổn định</div>
     </div>
 
-    <div class="patient-card">
-        <h3 style="font-size: 16px;">Bệnh nhân: Nguyễn Văn Minh</h3>
-        <p style="font-size: 12px; color: var(--text-sub);">Mã bệnh án: HUIT-1782024</p>
-        <div class="patient-info">
-            <div class="info-tag">Chiều cao: <strong>1m72</strong></div>
-            <div class="info-tag">Cân nặng: <strong>68kg (BMI: 23.0)</strong></div>
+    <div class="patient-box">
+        <h2 style="font-size: 16px; font-weight: 700;">Người dùng: Nguyễn Văn Minh</h2>
+        <div style="font-size: 11px; color: var(--sub);">ID Thiết bị liên kết: #SSV-NTT-01</div>
+        <div class="p-meta">
+            <span class="meta-pill">Chiều cao: 1m72</span>
+            <span class="meta-pill">Cân nặng: 68kg</span>
+            <span class="meta-pill">BMI: 23.0 (Bình thường)</span>
         </div>
-        <div class="medical-notes">
-            ⚠️ <strong>Tiền sử bệnh lý:</strong> Dị ứng Penicillin, Hen suyễn mạn tính nhẹ. Chấn thương cổ chân trái (2025).
-        </div>
-    </div>
-
-    <div class="vitals-grid">
-        <div class="vital-card" id="card-hr">
-            <div class="vital-title">Nhịp tim</div>
-            <div class="vital-value" id="val-hr">75</div>
-            <div class="vital-unit">BPM (60-100)</div>
-            <div class="vital-icon">❤️</div>
-        </div>
-        <div class="vital-card" id="card-spo2">
-            <div class="vital-title">Nồng độ oxy</div>
-            <div class="vital-value" id="val-spo2">98</div>
-            <div class="vital-unit">% SpO2 (95-100)</div>
-            <div class="vital-icon">🫁</div>
-        </div>
-        <div class="vital-card" id="card-bp">
-            <div class="vital-title">Huyết áp</div>
-            <div class="vital-value" id="val-bp">120/80</div>
-            <div class="vital-unit">mmHg (120/80)</div>
-            <div class="vital-icon">🩸</div>
-        </div>
-        <div class="vital-card" id="card-temp">
-            <div class="vital-title">Nhiệt độ</div>
-            <div class="vital-value" id="val-temp">36.7</div>
-            <div class="vital-unit">°C (36.5-37.2)</div>
-            <div class="vital-icon">🌡️</div>
-        </div>
-    </div>
-    
-    <div class="vitals-grid" style="grid-template-columns: 1fr;">
-        <div class="vital-card" id="card-rr">
-            <div class="vital-title">Nhịp thở</div>
-            <div class="vital-value" id="val-rr">16</div>
-            <div class="vital-unit">lần/phút (12-20)</div>
-            <div class="vital-icon">🌬️</div>
+        <div class="allergy-alert">
+            ⚠️ <b>Bệnh sử nền & Tiền sử dị ứng khẩn cấp (Mã hóa QR):</b> Mẫn cảm cực độ thành phần kháng sinh Penicillin. Có tiền sử Hen suyễn lâm sàng mạn tính.
         </div>
     </div>
 
-    <button class="feature-btn" onclick="openHospitalModal()">🏥 Mở Bệnh Án Điện Tử Bảo Mật</button>
-    <button class="feature-btn btn-knight" onclick="openKnightModal()">🏍️ Kích Hoạt Radar Hiệp Sĩ Ứng Cứu</button>
-
-    <!-- Modal Bệnh án mật -->
-    <div id="hospital-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal('hospital-modal')">&times;</span>
-            <h3>🔐 Hệ Thống Bệnh Án Điện Tử</h3>
-            <div id="lock-section" style="margin-top: 15px;">
-                <p style="font-size: 13px; margin-bottom: 10px; color: var(--text-sub);">Yêu cầu phân quyền Bác sĩ/Bệnh viện để quét dữ liệu:</p>
-                <input type="password" id="hospital-pass" placeholder="Nhập mã pin bác sĩ (1234)..." style="width:100%; padding:10px; margin-bottom:10px; border:1px solid #ccc; border-radius:8px;">
-                <button class="feature-btn" onclick="verifyPass()">Xác thực truy cập</button>
-            </div>
-            <div id="history-section" style="display:none; margin-top: 15px;">
-                <h4 style="color:var(--safe); margin-bottom:10px;">🟢 Xác thực thành công!</h4>
-                <p style="font-size:13px; line-height:1.7; color: var(--text-main);">
-                    <b>[LỊCH SỬ KHÁM BỆNH ĐIỆN TỬ - BV HUIT]</b><br>
-                    • <b>12/01/2026:</b> Cấp cứu ngất xỉu do tụt huyết áp lâm sàng.<br>
-                    • <b>05/03/2026:</b> Tái khám Hen suyễn, bác sĩ chỉ định theo dõi SpO2 nghiêm ngặt.<br>
-                    • <b>Khuyến cáo hệ thống:</b> Cảnh báo tức thì nếu nhịp thở vượt ngưỡng 24 lần/phút.
-                </p>
-            </div>
+    <div class="vitals-container">
+        <div class="v-card" id="box-hr">
+            <div class="v-title">Nhịp tim</div>
+            <div class="v-value" id="lbl-hr">75</div>
+            <div class="v-unit">BPM (60 - 100)</div>
+            <div class="v-icon">❤️</div>
+        </div>
+        <div class="v-card" id="box-spo2">
+            <div class="v-title">Oxy trong máu</div>
+            <div class="v-value" id="lbl-spo2">98</div>
+            <div class="v-unit">% SpO2 (95 - 100)</div>
+            <div class="v-icon">🫁</div>
+        </div>
+        <div class="v-card" id="box-rr">
+            <div class="v-title">Tần số nhịp thở</div>
+            <div class="v-value" id="lbl-rr">16</div>
+            <div class="v-unit">lần/phút (12 - 20)</div>
+            <div class="v-icon">🌬️</div>
+        </div>
+        <div class="v-card" id="box-temp">
+            <div class="v-title">Nhiệt độ cơ thể</div>
+            <div class="v-value" id="lbl-temp">36.7</div>
+            <div class="v-unit">°C (36.5 - 37.2)</div>
+            <div class="v-icon">🌡️</div>
+        </div>
+    </div>
+    <div class="vitals-container" style="grid-template-columns: 1fr;">
+        <div class="v-card" id="box-bp">
+            <div class="v-title">Huyết áp động mạch</div>
+            <div class="v-value" id="lbl-bp">120/80</div>
+            <div class="v-unit">mmHg (Mức chuẩn liên thông)</div>
+            <div class="v-icon">🩸</div>
         </div>
     </div>
 
-    <!-- Modal Radar Hiệp sĩ -->
-    <div id="knight-modal" class="modal">
-        <div class="modal-content" style="text-align:center;">
-            <span class="close-btn" onclick="closeModal('knight-modal')">&times;</span>
-            <h3>🛰️ Quét Bán Kính Tình Nguyện Viên</h3>
-            <p style="font-size:12px; color:var(--text-sub);">Mô phỏng mạng lưới ứng cứu Sensaive lân cận</p>
-            <div class="radar-box">
-                <div class="radar-sweep"></div>
-                <div class="knight-dot" style="top:25px; left:35px;"></div>
-                <div class="knight-dot" style="top:95px; left:100px;"></div>
-                <div class="knight-dot" style="top:60px; left:110px;"></div>
-            </div>
-            <p style="font-size:13px; font-weight:600; color:#7C3AED;">Phát hiện 3 thiết bị đeo Sensaive ở khoảng cách < 500m đã nhận tín hiệu!</p>
+    <div class="heavy-computation-box">
+        <div class="graph-title"><span>📡 Tách toán xử lý đồ họa tại Biên (Tier 2 Node)</span><span>ECG Realtime</span></div>
+        <div class="canvas-sim"><div class="ecg-line"></div></div>
+        <div class="graph-title" style="margin-top: 10px;"><span>🎛️ Thuật toán xử lý cụm đèn quang phổ NIR LED</span><span>Đang quét phổ...</span></div>
+        <div class="spectro-bars">
+            <div class="spec-bar"></div><div class="spec-bar"></div><div class="spec-bar"></div><div class="spec-bar"></div>
+            <div class="spec-bar"></div><div class="spec-bar"></div><div class="spec-bar"></div><div class="spec-bar"></div>
         </div>
     </div>
 
-    <!-- Màn hình SOS Khẩn cấp bẻ lái từ xa -->
-    <div id="sos-screen">
-        <h1>🚨 PHÁT HIỆN TÉ NGÃ 🚨</h1>
-        <p style="font-size: 18px; font-weight: 600; margin-bottom: 15px;">HỆ THỐNG TRIAGE AI ĐANG ĐIỀU PHỐI CẤP CỨU</p>
-        <p id="sos-details" style="font-size: 14px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; max-width: 90%;"></p>
-        <div style="margin-top: 30px; font-size: 13px; opacity: 0.8;">Hệ thống đang tự động phát tín hiệu SOS đến các Hiệp sĩ Sensaive vòng ngoài...</div>
+    <button class="btn-action btn-blue" onclick="openModal('fhir-modal')">📄 Kết xuất Hồ sơ Bệnh sử số chuẩn HL7 FHIR</button>
+    <button class="btn-action" onclick="openModal('knight-modal')" style="background: #6D28D9;">🛰️ Kích hoạt Radar quét mạng lưới Hiệp sĩ thực địa</button>
+
+    <div id="fhir-modal" class="modal-overlay">
+        <div class="modal-body">
+            <span class="close-icon" onclick="closeModal('fhir-modal')">&times;</span>
+            <h3 style="color: #0284C7; font-size:15px; margin-bottom:5px;">📋 HL7 FHIR Resource Payload</h3>
+            <div style="font-size:11px; color:var(--sub);">Cấu trúc dữ liệu liên thông quốc tế chuyển tiếp phòng cấp cứu</div>
+            <pre id="fhir-json-view"></pre>
+        </div>
+    </div>
+
+    <div id="knight-modal" class="modal-overlay">
+        <div class="modal-body" style="text-align: center;">
+            <span class="close-icon" onclick="closeModal('knight-modal')">&times;</span>
+            <h3 style="color: #6D28D9; font-size:15px; margin-bottom:5px;">🛰️ Sensaive GPS Radar Network</h3>
+            <p style="font-size: 12px; color: var(--sub); margin-bottom: 15px;">Tìm kiếm tình nguyện viên y tế đeo thiết bị Sensaive gần vị trí sự cố nhất</p>
+            <div style="font-size: 32px; animation: flashText 1s infinite;">📍</div>
+            <div style="font-size: 13px; font-weight: bold; color: #6D28D9; margin-top: 10px;">Phát hiện thấy 2 "Hiệp sĩ ứng cứu" lân cận trong bán kính 250m đang nhận tín hiệu định vị tọa độ từ SOS Gateway!</div>
+        </div>
+    </div>
+
+    <div id="triage-level3-screen">
+        <h1>🚨 SOS TRIAGE: LEVEL 3 🚨</h1>
+        <div style="font-weight: 700; font-size: 16px; margin-top: 10px; text-transform: uppercase; letter-spacing:0.5px;">BÁO ĐỘNG ĐỎ NGUY KỊCH - TỰ ĐỘNG KÍCH HOẠT 115</div>
+        <div class="sos-status-panel" id="sos-message-details">...</div>
+        <div style="margin-top: 25px; font-size: 11px; opacity: 0.85; max-width: 80%;">Payload JSON cấu trúc HL7 FHIR tích hợp dữ liệu định vị vệ tinh GPS đã được đóng gói, bẻ lộ trình truyền thẳng tới máy quét trực ban bệnh viện gần nhất...</div>
     </div>
 
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
     <script>
+        // QUAN TRỌNG: Dán link Realtime Database của chính bạn vào đây để liên thông dữ liệu!
         const firebaseConfig = { databaseURL: "https://sensaive-huit-default-rtdb.firebaseio.com/" };
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("sensaive_demo");
+        const refNode = firebase.database().ref("sensaive_hub");
 
-        db.on("value", (snapshot) => {
+        refNode.on("value", (snapshot) => {
             const data = snapshot.val();
             if(!data) return;
 
-            document.getElementById("val-hr").innerText = data.heartRate || 75;
-            document.getElementById("val-spo2").innerText = data.spo2 || 98;
-            document.getElementById("val-bp").innerText = data.bloodPressure || "120/80";
-            document.getElementById("val-temp").innerText = data.temperature || 36.7;
-            document.getElementById("val-rr").innerText = data.respiratoryRate || 16;
+            // Đồng bộ 5 thông số sinh hiệu thời gian thực từ Tier 1 truyền sang
+            document.getElementById("lbl-hr").innerText = data.heartRate || 75;
+            document.getElementById("lbl-spo2").innerText = data.spo2 || 98;
+            document.getElementById("lbl-rr").innerText = data.respiratoryRate || 16;
+            document.getElementById("lbl-temp").innerText = data.temperature || 36.7;
+            document.getElementById("lbl-bp").innerText = data.bloodPressure || "120/80";
 
-            // Xử lý phát âm thanh Text-to-Speech khi có lệnh nói từ Tier 1 gửi xuống
-            if (data.speechText && window.currentSpeech !== data.speechText) {
-                window.currentSpeech = data.speechText;
-                let utterance = new SpeechSynthesisUtterance(data.speechText);
-                utterance.lang = 'vi-VN';
-                utterance.rate = 0.95;
-                window.speechSynthesis.speak(utterance);
+            // Sàng lọc cấu trúc dữ liệu lâm sàng tự động cập nhật vào Payload JSON HL7 FHIR
+            buildFhirPayload(data);
+
+            // Kích hoạt tác vụ đàm thoại giọng nói cốt lõi của "Điều dưỡng số" (Sensaive Voice AI) khi nhận lệch tín hiệu
+            if (data.triggerVoice && window.lastSpeechPayload !== data.triggerVoice) {
+                window.lastSpeechPayload = data.triggerVoice;
+                let ttsVoice = new SpeechSynthesisUtterance(data.triggerVoice);
+                ttsVoice.lang = 'vi-VN';
+                ttsVoice.rate = 0.95;
+                window.speechSynthesis.speak(ttsVoice);
             }
 
-            if(data.isFall) {
-                document.getElementById("sos-details").innerText = data.aiMessage || "Cảnh báo khẩn cấp toàn hệ thống";
-                document.getElementById("sos-screen").style.display = "flex";
+            // Logic phân chia 3 cấp độ Triage y khoa tích hợp
+            let triageLvl = data.triageLevel || 1;
+            let badge = document.getElementById("triage-badge");
+            
+            if (triageLvl === 3) {
+                document.getElementById("sos-message-details").innerText = data.triggerVoice || "Phát hiện sự cố va chạm té ngã tự do tại biên.";
+                document.getElementById("triage-level3-screen").style.display = "flex";
             } else {
-                document.getElementById("sos-screen").style.display = "none";
-                toggleAlert("card-hr", data.heartRate > 100 || data.heartRate < 60);
-                toggleAlert("card-spo2", data.spo2 < 95);
-                toggleAlert("card-temp", data.temperature > 37.5 || data.temperature < 36);
-                toggleAlert("card-rr", data.respiratoryRate > 22 || data.respiratoryRate < 12);
-                
-                let isAnyAlert = (data.heartRate > 100 || data.heartRate < 60 || data.spo2 < 95 || data.respiratoryRate > 22);
-                let statusBadge = document.getElementById("global-status");
-                if (isAnyAlert) {
-                    statusBadge.innerText = "⚠️ Bất thường";
-                    statusBadge.style.backgroundColor = "rgba(239, 68, 68, 0.1)";
-                    statusBadge.style.color = "var(--danger)";
+                document.getElementById("triage-level3-screen").style.display = "none";
+                resetVisualAlerts();
+
+                if (triageLvl === 2) {
+                    badge.innerText = "CẤP 2: NGHI NGỜ / THEO DÕI ĐẶC BIỆT";
+                    badge.style.backgroundColor = "var(--p2)";
+                    evaluateSpecificVitals(data);
                 } else {
-                    statusBadge.innerText = "🟢 An toàn";
-                    statusBadge.style.backgroundColor = "rgba(16, 185, 129, 0.1)";
-                    statusBadge.style.color = "var(--safe)";
+                    badge.innerText = "CẤP 1: BIỂU MẪU SỨC KHỎE ỔN ĐỊNH";
+                    badge.style.backgroundColor = "var(--p1)";
                 }
             }
         });
 
-        function toggleAlert(id, condition) {
-            if(condition) document.getElementById(id).classList.add("alert");
-            else document.getElementById(id).classList.remove("alert");
+        function resetVisualAlerts() {
+            let boxes = ["box-hr", "box-spo2", "box-rr", "box-temp"];
+            boxes.forEach(b => document.getElementById(b).className = "v-card");
         }
-        function openHospitalModal() { document.getElementById("hospital-modal").style.display = "flex"; }
-        function openKnightModal() { document.getElementById("knight-modal").style.display = "flex"; }
-        function closeModal(id) { 
-            document.getElementById(id).style.display = "none"; 
-            if(id === 'hospital-modal') {
-                document.getElementById("lock-section").style.display = "block";
-                document.getElementById("history-section").style.display = "none";
-                document.getElementById("hospital-pass").value = "";
-            }
+
+        function evaluateSpecificVitals(data) {
+            if(data.heartRate > 100 || data.heartRate < 60) document.getElementById("box-hr").classList.add("warn");
+            if(data.spo2 < 95) document.getElementById("box-spo2").classList.add("warn");
+            if(data.respiratoryRate > 22 || data.respiratoryRate < 12) document.getElementById("box-rr").classList.add("warn");
+            if(data.temperature > 37.5 || data.temperature < 36.0) document.getElementById("box-temp").classList.add("warn");
         }
-        function verifyPass() {
-            if(document.getElementById("hospital-pass").value === "1234") {
-                document.getElementById("lock-section").style.display = "none";
-                document.getElementById("history-section").style.display = "block";
-            } else {
-                alert("Mật mã Bác sĩ không chính xác!");
-            }
+
+        function buildFhirPayload(data) {
+            const fhirResource = {
+                resourceType: "Bundle",
+                type: "document",
+                patient: {
+                    name: "Nguyễn Văn Minh",
+                    medicalRecordID: "HUIT-NTT-2026",
+                    allergies: ["Penicillin"],
+                    chronicConditions: ["Asthma"]
+                },
+                observation: {
+                    heartRate: { value: data.heartRate || 75, unit: "BPM" },
+                    spo2: { value: data.spo2 || 98, unit: "%" },
+                    respiratoryRate: { value: data.respiratoryRate || 16, unit: "breaths/min" },
+                    temperature: { value: data.temperature || 36.7, unit: "C" },
+                    bloodPressure: { value: data.bloodPressure || "120/80", unit: "mmHg" }
+                },
+                triageMeta: {
+                    assignedLevel: data.triageLevel || 1,
+                    fallDetected: data.isFall || false,
+                    telemetryStatus: data.fhirStatus || "ACTIVE_MONITORING"
+                }
+            };
+            document.getElementById("fhir-json-view").textContent = JSON.stringify(fhirResource, null, 2);
         }
+
+        function openModal(id) { document.getElementById(id).style.display = "flex"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
     </script>
 </body>
 </html>
