@@ -1,165 +1,187 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sensaive - Trạm Giả Lập Phát Sinh Hiệu</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-
-  :root {
-    --bg-color: #F0F4F8;
-    --card-bg: #FFFFFF;
-    --text-main: #102A43;
-    --text-sub: #627D98;
-    --primary-blue: #0052CC;
-    --teal: #00A699;
-    --red-alert: #E53E3E;
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-
-  body {
-    background-color: var(--bg-color);
-    color: var(--text-main);
-    padding: 50px 20px;
-    display: flex; flex-direction: column; align-items: center; min-height: 100vh;
-  }
-
-  .admin-panel {
-    background: var(--card-bg); border-radius: 24px; padding: 35px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.04); width: 100%; max-width: 480px;
-    border: 1px solid rgba(0,82,204,0.08);
-  }
-
-  h1 { font-size: 24px; font-weight: 800; color: var(--primary-blue); margin-bottom: 6px; text-align: center; letter-spacing: -0.5px; }
-  .subtitle { font-size: 13px; color: var(--text-sub); text-align: center; margin-bottom: 30px; line-height: 1.4; }
-
-  .control-group { margin-bottom: 24px; background: #F8FAFC; padding: 16px; border-radius: 12px; border: 1px solid #E2E8F0; }
-  .control-label { font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 12px; display: flex; justify-content: space-between; text-transform: uppercase; letter-spacing: 0.5px; }
-  .current-val { color: var(--primary-blue); font-weight: 800; font-size: 15px; }
-
-  /* Thanh kéo Slider thiết kế lại cực mượt */
-  .slider {
-    width: 100%; -webkit-appearance: none; height: 8px; border-radius: 50px;
-    background: #E2E8F0; outline: none; margin: 8px 0; cursor: pointer;
-  }
-  .slider::-webkit-slider-thumb {
-    -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
-    background: var(--primary-blue); border: 3px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.15); transition: transform 0.1s;
-  }
-  .slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
-
-  /* Khu vực chọn Kịch bản nhanh */
-  .btn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 15px; }
-  .btn {
-    padding: 15px; border: none; border-radius: 12px; font-size: 14px; font-weight: 700;
-    cursor: pointer; transition: all 0.2s ease; background: #E4EFFF; color: var(--primary-blue);
-  }
-  .btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,52,204,0.1); }
-  .btn:active { transform: translateY(0); }
-  
-  .btn.btn-normal { background: #E6F4EA; color: #137333; }
-  .btn.btn-normal:hover { box-shadow: 0 4px 12px rgba(19,115,51,0.15); }
-  
-  .btn.btn-warning { background: #FEF7E0; color: #B06000; }
-  .btn.btn-warning:hover { box-shadow: 0 4px 12px rgba(176,96,0,0.15); }
-  
-  .btn.btn-sos { 
-    background: #FCE8E6; color: var(--red-alert); grid-column: span 2; 
-    font-size: 15px; border: 2px dashed var(--red-alert); margin-top: 4px;
-  }
-  .btn.btn-sos:hover { background: #FAD2CF; box-shadow: 0 4px 15px rgba(229,62,62,0.2); }
-
-  #sync-indicator {
-    text-align: center; font-size: 12px; color: var(--teal); font-weight: 600; margin-top: 25px;
-    display: flex; align-items: center; justify-content: center; gap: 6px; background: #E6F6F5; padding: 8px; border-radius: 20px;
-  }
-  .pulse-dot { width: 6px; height: 6px; background: var(--teal); border-radius: 50%; animation: pulse 1s infinite alternate; }
-  @keyframes pulse { from { opacity: 0.4; } to { opacity: 1; } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensaive Simulator - Tier 1 Nâng Cao</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background: #0F172A; color: #E2E8F0; padding: 20px; max-width: 650px; margin: 0 auto; }
+        h2 { text-align: center; color: #38BDF8; margin-bottom: 20px; }
+        .control-group { background: #1E293B; padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #334155; position: relative; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; }
+        .flex-row { display: flex; justify-content: space-between; align-items: center; }
+        .val-display { font-size: 18px; font-weight: 700; color: #38BDF8; }
+        input[type="range"] { width: 100%; margin-top: 8px; accent-color: #38BDF8; }
+        input[type="text"] { width: 100%; padding: 10px; background: #0F172A; border: 1px solid #334155; color: white; border-radius: 8px; margin-top: 5px; }
+        
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 10px; transition: all 0.2s; }
+        .btn-normal { background: #10B981; color: white; }
+        .btn-fall { background: #EF4444; color: white; }
+        .btn-ai { background: #8B5CF6; color: white; }
+        .btn-call { background: #0EA5E9; color: white; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        
+        /* Giao diện giả lập cuộc gọi ảo thoại */
+        .phone-simulation { display: none; background: #020617; border: 2px solid #0EA5E9; padding: 15px; border-radius: 10px; margin-top: 15px; text-align: center; animation: pulseCall 2s infinite; }
+        .audio-wave { display: inline-flex; gap: 4px; align-items: center; height: 30px; margin-top: 10px; }
+        .audio-bar { width: 4px; height: 100%; background: #0EA5E9; border-radius: 2px; animation: sound 1s ease-in-out infinite alternate; }
+        .audio-bar:nth-child(2) { animation-delay: 0.2s; height: 60%; }
+        .audio-bar:nth-child(3) { animation-delay: 0.4s; height: 80%; }
+        .audio-bar:nth-child(4) { animation-delay: 0.1s; height: 40%; }
+        
+        @keyframes sound { 0% { transform: scaleY(0.3); } 100% { transform: scaleY(1.1); } }
+        @keyframes pulseCall { 0% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(14, 165, 233, 0); } 100% { box-shadow: 0 0 0 0 rgba(14, 165, 233, 0); } }
+    </style>
 </head>
 <body>
 
-  <div class="admin-panel">
-    <h1>Sensaive Simulator</h1>
-    <div class="subtitle">Bảng điều khiển giả lập tín hiệu phần cứng Vòng tay thông minh (Tier 1 & Tier 2)</div>
+    <h2>🧬 Sensaive Tier 1 - Bộ Giả Lập Điều Khiển Trung Tâm</h2>
+
+    <!-- HỆ THỐNG TRIAGE AI GIAO TIẾP VÀ GỌI ĐIỆN THOẠI -->
+    <div class="control-group">
+        <label>🎙️ Triage AI Giọng Nói & Cuộc Gọi Ứng Xử Tự Động</label>
+        <button class="btn btn-ai" onclick="triggerVoiceAI('Cảnh báo! Phát hiện dấu hiệu ngột ngạt cấp tính. Hệ thống Triage AI tự động kích hoạt điều phối oxy phòng cấp cứu.', 'Cảnh báo từ hệ thống Sensaive AI. Phát hiện bệnh nhân Nguyễn Văn Minh nhịp thở tăng cao bất thường, có dấu hiệu ngột ngạt cấp tính. Hệ thống tự động kích hoạt điều phối oxy phòng cấp cứu.')">
+            🗣️ AI Nói: "Phát hiện dấu hiệu ngạt thở cấp tính"
+        </button>
+        
+        <!-- NÚT GỌI ĐIỆN THOẠI THOẠI THEO ĐÚNG MÔ TẢ DỰ ÁN -->
+        <button class="btn btn-call" id="btn-phone-call" onclick="startAICall()">
+            📞 KÍCH HOẠT: AI Triage Gọi Điện Thoại Hỏi Han Bệnh Nhân
+        </button>
+
+        <!-- Khung giả lập giao diện cuộc gọi thoại nhấp nháy âm thanh -->
+        <div id="phone-box" class="phone-simulation">
+            <div style="font-weight: bold; color: #0EA5E9;">🤖 Sensaive Triage AI - CALLING...</div>
+            <div style="font-size: 13px; margin-top: 5px; color: #94A3B8;" id="phone-status">Đang thiết lập kết nối cuộc gọi thoại...</div>
+            <div class="audio-wave">
+                <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- HỆ THỐNG CÁC THANH TRƯỢT FULL 5 SINH HIỆU REALTIME -->
+    <div class="control-group">
+        <div class="flex-row">
+            <label>1. Nhịp tim (Heart Rate)</label>
+            <span class="val-display" id="lbl-hr">75 BPM</span>
+        </div>
+        <input type="range" id="slip-hr" min="40" max="160" value="75" oninput="updateData()">
+    </div>
 
     <div class="control-group">
-      <div class="control-label">Nhịp tim (Heart Rate): <span class="current-val" id="hr-display">75 BPM</span></div>
-      <input type="range" min="40" max="150" value="75" class="slider" id="hr-slider">
+        <div class="flex-row">
+            <label>2. Nồng độ Oxy máu (SpO2)</label>
+            <span class="val-display" id="lbl-spo2">98 %</span>
+        </div>
+        <input type="range" id="slip-spo2" min="80" max="100" value="98" oninput="updateData()">
     </div>
 
     <div class="control-group">
-      <div class="control-label">Nồng độ Oxy (SpO2): <span class="current-val" id="spo2-display">98%</span></div>
-      <input type="range" min="80" max="100" value="98" class="slider" id="spo2-slider">
+        <div class="flex-row">
+            <label>3. Huyết áp động mạch (Blood Pressure)</label>
+        </div>
+        <input type="text" id="txt-bp" value="120/80" onchange="updateData()" placeholder="Ví dụ: 140/90">
     </div>
 
-    <div class="control-label" style="margin-left: 4px;">Kịch bản sự cố khẩn cấp:</div>
-    <div class="btn-grid">
-      <button class="btn btn-normal" onclick="setScenario('NORMAL', 75, 98)">🟢 Cơ thể bình thường</button>
-      <button class="btn btn-warning" onclick="setScenario('WARNING', 118, 93)">🟡 Cảnh báo nhịp tim cao</button>
-      <button class="btn btn-sos" onclick="setScenario('SOS', 52, 89)">🚨 GIẢ LẬP TÉ NGÃ (SOS KHẨN CẤP)</button>
+    <div class="control-group">
+        <div class="flex-row">
+            <label>4. Nhiệt độ cơ thể (°C)</label>
+            <span class="val-display" id="lbl-temp">36.7 °C</span>
+        </div>
+        <input type="range" id="slip-temp" min="35.0" max="41.0" step="0.1" value="36.7" oninput="updateData()">
     </div>
 
-    <div id="sync-indicator"><div class="pulse-dot"></div> Hệ thống đang truyền gói dữ liệu trực tuyến thời gian thực</div>
-  </div>
+    <div class="control-group">
+        <div class="flex-row">
+            <label>5. Tần số nhịp thở (Respiratory Rate)</label>
+            <span class="val-display" id="lbl-rr">16 lần/phút</span>
+        </div>
+        <input type="range" id="slip-rr" min="10" max="35" value="16" oninput="updateData()">
+    </div>
 
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <!-- KỊCH BẢN SHOW TÉ NGÃ ĐỂ ĐẨY TRẠNG THÁI KHẨN CẤP -->
+    <div class="control-group">
+        <label>Kịch bản Thuyết trình Sân khấu</label>
+        <button class="btn btn-fall" onclick="triggerFall()">🚨 MÔ PHỎNG TÉ NGÃ TỰ DO (KÍCH HOẠT HÚ CÒI TIER 2)</button>
+        <button class="btn btn-normal" onclick="triggerNormal()">🟢 RESET TOÀN BỘ HỆ THỐNG VỀ AN TOÀN</button>
+    </div>
 
-  <script>
-    // Mã cấu hình Firebase đồng bộ đồng nhất với file index.html
-    const firebaseConfig = {
-      apiKey: "AIzaSyCbaNZMLJqsH1W3VAa81GaaY7ocaTbZeqw",
-      authDomain: "sensaive-demo.firebaseapp.com",
-      databaseURL: "https://sensaive-demo-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "sensaive-demo",
-      storageBucket: "sensaive-demo.firebasestorage.app",
-      messagingSenderId: "289646147734",
-      appId: "1:289646147734:web:c13d029f86dbc5181ceab7",
-      measurementId: "G-ZTN2T5DMWS"
-    };
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script>
+        const firebaseConfig = { databaseURL: "https://sensaive-huit-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database().ref("sensaive_demo");
 
-    if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-    const db = firebase.database();
+        function updateData() {
+            let hr = parseInt(document.getElementById("slip-hr").value);
+            let spo2 = parseInt(document.getElementById("slip-spo2").value);
+            let bp = document.getElementById("txt-bp").value;
+            let temp = parseFloat(document.getElementById("slip-temp").value);
+            let rr = parseInt(document.getElementById("slip-rr").value);
 
-    const hrSlider = document.getElementById('hr-slider');
-    const spo2Slider = document.getElementById('spo2-slider');
-    let currentStatus = 'NORMAL';
+            document.getElementById("lbl-hr").innerText = hr + " BPM";
+            document.getElementById("lbl-spo2").innerText = spo2 + " %";
+            document.getElementById("lbl-temp").innerText = temp + " °C";
+            document.getElementById("lbl-rr").innerText = rr + " lần/phút";
 
-    // Đẩy dữ liệu thô lên đám mây Firebase
-    function updateFirebase() {
-      db.ref('sensaive/device1').set({
-        heartRate: parseInt(hrSlider.value),
-        spo2: parseInt(spo2Slider.value),
-        status: currentStatus
-      });
-    }
+            db.update({
+                heartRate: hr, id: "huit",
+                spo2: spo2,
+                bloodPressure: bp,
+                temperature: temp,
+                respiratoryRate: rr
+            });
+        }
 
-    // Theo dõi hành vi kéo thanh trượt Nhịp tim
-    hrSlider.addEventListener('input', (e) => {
-      document.getElementById('hr-display').innerText = e.target.value + " BPM";
-      updateFirebase();
-    });
+        // Tạo chuỗi âm thanh AI nói phát trực tiếp từ máy chủ đám mây xuống điện thoại
+        function triggerVoiceAI(log, speech) {
+            db.update({
+                speechText: speech,
+                heartRate: 125,
+                respiratoryRate: 28,
+                spo2: 91
+            });
+            alert("Đã gửi lệnh thoại xử lý khẩn cấp! Hãy nghe âm thanh phát ra từ điện thoại.");
+        }
 
-    // Theo dõi hành vi kéo thanh trượt SpO2
-    spo2Slider.addEventListener('input', (e) => {
-      document.getElementById('spo2-display').innerText = e.target.value + "%";
-      updateFirebase();
-    });
+        // Mô phỏng cuộc gọi điện thoại thoại thông minh khi chỉ số bất thường
+        function startAICall() {
+            let hr = parseInt(document.getElementById("slip-hr").value);
+            let spo2 = parseInt(document.getElementById("slip-spo2").value);
+            
+            document.getElementById("phone-box").style.display = "block";
+            document.getElementById("phone-status").innerText = "Đang kết nối thoại thoại đến Nguyễn Văn Minh...";
+            
+            let DynamicSpeech = "Xin chào ông Nguyễn Văn Minh. Hệ thống trung tâm Sensaive AI phát hiện nhịp tim của ông đang ở mức " + hr + " lần một phút. Ông có đang cảm thấy mệt mỏi hay khó thở không? Vui lòng nhấn vào nút cứu hộ trên màn hình nếu cần hỗ trợ khẩn cấp từ các hiệp sĩ y tế gần nhất.";
+            
+            setTimeout(() => {
+                document.getElementById("phone-status").innerText = "Đang đàm thoại: Sensaive AI đang nói trực tiếp qua máy chủ...";
+                db.update({ speechText: DynamicSpeech });
+            }, 2000);
+        }
 
-    // Hàm thực thi các nút kịch bản dựng sẵn
-    function setScenario(status, hr, spo2) {
-      currentStatus = status;
-      hrSlider.value = hr;
-      spo2Slider.value = spo2;
-      
-      document.getElementById('hr-display').innerText = hr + " BPM";
-      document.getElementById('spo2-display').innerText = spo2 + "%";
-      
-      updateFirebase();
-    }
-  </script>
+        function triggerFall() {
+            let sosText = "Hệ thống Sensaive AI phát hiện va đập gia tốc cực mạnh bốn chấm năm G từ thắt lưng bệnh nhân. Kích hoạt cuộc gọi khẩn cấp mười một năm toàn vùng.";
+            db.update({
+                isFall: true,
+                speechText: sosText,
+                aiMessage: "CẢNH BÁO: Gia tốc biến thiên mạnh vượt ngưỡng 4.5G -> Khóa màn hình, kích hoạt định vị GPS cục bộ.",
+                heartRate: 140,
+                spo2: 90
+            });
+        }
+
+        function triggerNormal() {
+            document.getElementById("slip-hr").value = 75;
+            document.getElementById("slip-spo2").value = 98;
+            document.getElementById("slip-temp").value = 36.7;
+            document.getElementById("slip-rr").value = 16;
+            document.getElementById("txt-bp").value = "120/80";
+            document.getElementById("phone-box").style.display = "none";
+            updateData();
+            db.update({ isFall: false, speechText: "" });
+        }
+    </script>
 </body>
 </html>
