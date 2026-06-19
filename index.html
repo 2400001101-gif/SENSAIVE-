@@ -1,160 +1,260 @@
+```html
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensaive Tier 2 - Digital Nursing</title>
+    <title>Sensaive Tier 2 - Digital Nursing Interface</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #F8FAFC; color: #0F172A; padding: 15px; margin: 0; }
-        .top-bar { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .badge { padding: 5px 10px; border-radius: 20px; font-weight: bold; font-size: 11px; color: white; background: #10B981; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        :root {
+            --bg: #F0F4F8;
+            --card: #FFFFFF;
+            --txt: #102A43;
+            --sub: #627D98;
+            --blue: #0284C7;
+            --green: #10B981;
+            --yellow: #F59E0B;
+            --red: #EF4444;
+            --purple: #8B5CF6;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); color: var(--txt); padding: 15px; padding-bottom: 50px; }
         
-        .card { background: white; padding: 15px; border-radius: 12px; margin-bottom: 12px; border: 1px solid #E2E8F0; }
-        .vitals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .v-box { background: white; padding: 15px; border-radius: 10px; border: 1px solid #E2E8F0; text-align: center; }
-        .v-box.warn { background: #FFFBEB; border-color: #F59E0B; }
-        .v-title { font-size: 11px; color: #64748B; font-weight: bold; text-transform: uppercase; }
-        .v-val { font-size: 26px; font-weight: bold; margin: 5px 0; color: #0F172A; }
+        /* Audio Unlocker - Bắt buộc cho điện thoại */
+        #audio-unlock { background: #FEF2F2; color: #EF4444; padding: 12px; text-align: center; border-radius: 8px; margin-bottom: 15px; font-weight: bold; border: 2px dashed #EF4444; cursor: pointer; animation: pulse 2s infinite; }
         
-        /* Đồ thị ECG & Quang phổ */
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 16px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); margin-bottom: 15px; }
+        .logo { font-weight: 800; font-size: 20px; color: var(--blue); }
+        .triage-badge { padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 11px; color: white; background: var(--green); transition: background 0.3s; }
+        
+        .patient-card { background: var(--card); padding: 15px; border-radius: 12px; margin-bottom: 15px; border: 1px solid #E2E8F0; }
+        .meta-tags { display: flex; gap: 8px; margin-top: 10px; font-size: 12px; flex-wrap: wrap; }
+        .tag { background: #F1F5F9; padding: 4px 8px; border-radius: 6px; color: var(--sub); font-weight: 600; }
+        .allergy { margin-top: 10px; background: #FFFBEB; border-left: 4px solid var(--yellow); padding: 10px; font-size: 12px; border-radius: 4px; line-height: 1.5; }
+
+        .vitals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .v-box { background: var(--card); padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; text-align: left; position: relative; transition: all 0.3s; }
+        .v-box.warn { background: #FFFBEB; border-color: var(--yellow); }
+        .v-title { font-size: 11px; color: var(--sub); font-weight: 700; text-transform: uppercase; }
+        .v-val { font-size: 28px; font-weight: 800; color: var(--txt); margin: 4px 0; }
+        .v-unit { font-size: 11px; color: var(--sub); }
+        .v-icon { position: absolute; right: 12px; top: 12px; font-size: 18px; }
+
         .tech-box { background: #0F172A; color: #38BDF8; padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .ecg-line { width: 100%; height: 2px; background: #10B981; position: relative; margin: 20px 0; animation: scan 1.5s infinite; }
-        .spectro { display: flex; gap: 4px; height: 30px; align-items: flex-end; }
-        .bar { width: 10px; background: #8B5CF6; animation: jump 0.6s infinite alternate; }
+        .ecg-line { width: 100%; height: 2px; background: var(--green); position: relative; margin: 15px 0; animation: scan 1.5s infinite; }
+        .spectro { display: flex; gap: 4px; height: 35px; align-items: flex-end; }
+        .bar { width: 15px; background: var(--purple); animation: jump 0.6s infinite alternate; }
         .bar:nth-child(even) { background: #38BDF8; animation-duration: 0.4s; }
+
+        .btn { width: 100%; padding: 14px; border: none; border-radius: 10px; font-weight: 700; font-size: 13px; color: white; margin-bottom: 10px; cursor: pointer; }
         
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-bottom: 10px; color: white; }
+        /* Modals */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background: white; padding: 20px; border-radius: 16px; width: 100%; max-width: 400px; position: relative; }
+        .close { position: absolute; right: 15px; top: 15px; font-size: 24px; cursor: pointer; color: var(--sub); }
+        input[type="password"] { width: 100%; padding: 10px; border: 1px solid #CCC; border-radius: 6px; margin: 10px 0; }
+        pre { background: #0F172A; color: #38BDF8; padding: 12px; border-radius: 8px; font-size: 11px; overflow-x: auto; margin-top: 10px; }
         
-        /* Modal Popup */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 100%; max-width: 400px; position: relative; }
-        .close { position: absolute; right: 15px; top: 15px; font-size: 20px; cursor: pointer; }
-        pre { background: #0F172A; color: #38BDF8; padding: 10px; border-radius: 8px; font-size: 11px; overflow-x: auto; }
-        
-        /* Màn hình Đỏ */
-        #sos-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #EF4444; color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; box-sizing: border-box; }
-        
+        .radar { width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--purple); margin: 20px auto; position: relative; background: #F3E8FF; overflow: hidden; }
+        .radar-sweep { width: 100%; height: 100%; background: linear-gradient(90deg, rgba(139,92,246,0.5) 0%, transparent 50%); position: absolute; transform-origin: center; animation: rotate 2s linear infinite; }
+        .dot { width: 10px; height: 10px; background: var(--purple); border-radius: 50%; position: absolute; animation: pulse 1s infinite; }
+
+        #sos-screen { display: none; position: fixed; inset: 0; background: var(--red); color: white; z-index: 999; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        #sos-screen h1 { font-size: 45px; animation: blink 0.5s infinite; margin-bottom: 10px; }
+
         @keyframes scan { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
         @keyframes jump { 0% { height: 20%; } 100% { height: 100%; } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0; } }
     </style>
 </head>
 <body>
 
-    <div id="start-audio" style="background: #FEF2F2; color: #EF4444; padding: 10px; text-align: center; border-radius: 8px; margin-bottom: 10px; font-weight: bold; border: 1px solid #EF4444;" onclick="this.style.display='none'">
-        ⚠️ BẤM VÀO ĐÂY ĐỂ CHO PHÉP AI PHÁT GIỌNG NÓI
+    <div id="audio-unlock" onclick="unlockAudio()">
+        ⚠️ BẤM VÀO ĐÂY ĐỂ ĐÁNH THỨC Sensaive Voice AI ⚠️
     </div>
 
-    <div class="top-bar">
-        <b style="color: #0284C7; font-size: 18px;">🩺 Sensaive Core</b>
-        <div id="badge-triage" class="badge">CẤP 1: AN TOÀN</div>
+    <div class="header">
+        <div class="logo">🩺 Sensaive</div>
+        <div id="triage-badge" class="triage-badge">CẤP 1: AN TOÀN</div>
     </div>
 
-    <div class="card">
-        <b>Bệnh nhân: Nguyễn Văn Minh</b><br>
-        <span style="font-size: 12px; color: #64748B;">Mã hồ sơ: HUIT-1782024 | Dị ứng: Penicillin</span>
+    <div class="patient-card">
+        <h3 style="font-size: 16px;">Nguyễn Văn Minh</h3>
+        <div style="font-size: 12px; color: var(--sub);">ID Bệnh án: HUIT-NTT-2026</div>
+        <div class="meta-tags">
+            <span class="tag">Cao: 1m72</span>
+            <span class="tag">Nặng: 68kg</span>
+            <span class="tag">BMI: 23.0</span>
+        </div>
+        <div class="allergy">
+            ⚠️ <b>Tiền sử mạn tính:</b> Dị ứng Penicillin. Hen suyễn lâm sàng mạn tính.
+        </div>
     </div>
 
     <div class="vitals-grid">
-        <div class="v-box" id="box-hr"><div class="v-title">Nhịp tim</div><div class="v-val" id="lbl-hr">--</div><div style="font-size:10px;">BPM</div></div>
-        <div class="v-box" id="box-spo2"><div class="v-title">SpO2</div><div class="v-val" id="lbl-spo2">--</div><div style="font-size:10px;">%</div></div>
-        <div class="v-box" id="box-rr"><div class="v-title">Nhịp thở</div><div class="v-val" id="lbl-rr">--</div><div style="font-size:10px;">lần/p</div></div>
-        <div class="v-box" id="box-temp"><div class="v-title">Nhiệt độ</div><div class="v-val" id="lbl-temp">--</div><div style="font-size:10px;">°C</div></div>
+        <div class="v-box" id="box-hr"><div class="v-title">Nhịp tim</div><div class="v-val" id="val-hr">75</div><div class="v-unit">BPM</div><div class="v-icon">❤️</div></div>
+        <div class="v-box" id="box-spo2"><div class="v-title">SpO2</div><div class="v-val" id="val-spo2">98</div><div class="v-unit">%</div><div class="v-icon">🫁</div></div>
+        <div class="v-box" id="box-rr"><div class="v-title">Nhịp thở</div><div class="v-val" id="val-rr">16</div><div class="v-unit">lần/p</div><div class="v-icon">🌬️</div></div>
+        <div class="v-box" id="box-temp"><div class="v-title">Nhiệt độ</div><div class="v-val" id="val-temp">36.7</div><div class="v-unit">°C</div><div class="v-icon">🌡️</div></div>
     </div>
+    <div class="v-box" id="box-bp" style="margin-bottom: 15px;"><div class="v-title">Huyết áp</div><div class="v-val" id="val-bp">120/80</div><div class="v-unit">mmHg</div><div class="v-icon">🩸</div></div>
 
     <div class="tech-box">
-        <div style="font-size: 11px; color: #94A3B8;">ĐỒ THỊ ECG & PHỔ NIR LED</div>
+        <div style="font-size: 11px; font-weight: bold;">ĐỒ THỊ ECG & PHỔ QUANG HỌC NIR</div>
         <div style="overflow: hidden;"><div class="ecg-line"></div></div>
         <div class="spectro">
-            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
+            <div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div>
         </div>
     </div>
 
-    <button class="btn" style="background: #0284C7;" onclick="document.getElementById('modal-fhir').style.display='flex'">📄 Xem Hồ Sơ HL7 FHIR</button>
-    <button class="btn" style="background: #6D28D9;" onclick="document.getElementById('modal-radar').style.display='flex'">🛰️ Radar Hiệp Sĩ Cứu Hộ</button>
+    <button class="btn" style="background: var(--blue);" onclick="openModal('modal-fhir')">📄 Kết xuất Hồ sơ HL7 FHIR</button>
+    <button class="btn" style="background: var(--purple);" onclick="openModal('modal-radar')">🛰️ Radar Hiệp Sĩ Cứu Hộ Lân Cận</button>
+    <button class="btn" style="background: #0F172A;" onclick="openModal('modal-hospital')">🏥 Mở Bệnh Án Bảo Mật (Pass: 1234)</button>
 
+    <!-- Modal FHIR -->
     <div id="modal-fhir" class="modal">
         <div class="modal-content">
-            <span class="close" onclick="document.getElementById('modal-fhir').style.display='none'">&times;</span>
-            <h3 style="margin-top:0; color:#0284C7;">Hồ sơ xuất chuẩn HL7 FHIR</h3>
-            <pre id="fhir-code"></pre>
+            <span class="close" onclick="closeModal('modal-fhir')">&times;</span>
+            <h3 style="color: var(--blue);">Hồ sơ chuẩn HL7 FHIR</h3>
+            <pre id="fhir-json"></pre>
         </div>
     </div>
 
+    <!-- Modal Radar -->
     <div id="modal-radar" class="modal">
         <div class="modal-content" style="text-align: center;">
-            <span class="close" onclick="document.getElementById('modal-radar').style.display='none'">&times;</span>
-            <h3 style="margin-top:0; color:#6D28D9;">Radar Hiệp Sĩ Sensaive</h3>
-            <div style="font-size: 40px; margin: 15px 0;">📍</div>
-            <b>Phát hiện 2 Hiệp sĩ ứng cứu trong bán kính 200m!</b>
+            <span class="close" onclick="closeModal('modal-radar')">&times;</span>
+            <h3 style="color: var(--purple);">Mạng lưới Hiệp Sĩ Sensaive</h3>
+            <div class="radar">
+                <div class="radar-sweep"></div>
+                <div class="dot" style="top:20px; left:30px;"></div>
+                <div class="dot" style="top:80px; left:90px;"></div>
+                <div class="dot" style="top:50px; left:70px;"></div>
+            </div>
+            <p style="font-size: 13px; font-weight: bold; color: var(--purple);">Phát hiện 3 Hiệp sĩ ứng cứu trong bán kính 200m!</p>
+        </div>
+    </div>
+
+    <!-- Modal Bệnh viện -->
+    <div id="modal-hospital" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('modal-hospital')">&times;</span>
+            <h3>🔐 Khóa Bác Sĩ</h3>
+            <div id="lock-screen">
+                <input type="password" id="pass-input" placeholder="Nhập pass 1234...">
+                <button class="btn" style="background: var(--txt);" onclick="checkPass()">Mở Khóa Dữ Liệu</button>
+            </div>
+            <div id="history-screen" style="display: none; font-size: 13px; margin-top: 15px; line-height: 1.6;">
+                <b style="color: var(--green);">Mở khóa thành công!</b><br>
+                - 12/01/2026: Cấp cứu hạ đường huyết.<br>
+                - 05/03/2026: Tái khám Hen suyễn, chức năng phổi ổn định.
+            </div>
         </div>
     </div>
 
     <div id="sos-screen">
-        <h1 style="margin: 0; font-size: 40px;">🚨 CẤP CỨU 115 🚨</h1>
-        <p style="font-weight: bold; font-size: 18px;">PHÁT HIỆN TÉ NGÃ - CHẤN THƯƠNG</p>
-        <p style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 8px;">Hệ thống đã mã hóa vị trí GPS và hồ sơ HL7 gửi lên tổng đài y tế.</p>
+        <h1>🚨 115 SOS 🚨</h1>
+        <div style="font-size: 20px; font-weight: bold; margin-bottom: 20px;">PHÁT HIỆN TÉ NGÃ - CHẤN THƯƠNG</div>
+        <div style="background: rgba(0,0,0,0.3); padding: 15px; border-radius: 12px; font-size: 14px; max-width: 90%;">Đang gửi tọa độ GPS và hồ sơ HL7 FHIR lên tổng đài y tế. Điều phối hiệp sĩ Sensaive lân cận!</div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <!-- SỬ DỤNG SDK V8 ỔN ĐỊNH 100% -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <script>
+        // CẤU HÌNH FIREBASE THẬT CỦA BẠN (ĐÃ ĐIỀN SẴN)
         const firebaseConfig = {
             apiKey: "AIzaSyCbaNZMLJqsH1W3VAa81GaaY7ocaTbZeqw",
             authDomain: "sensaive-demo.firebaseapp.com",
             databaseURL: "https://sensaive-demo-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "sensaive-demo"
+            projectId: "sensaive-demo",
+            storageBucket: "sensaive-demo.firebasestorage.app",
+            messagingSenderId: "289646147734",
+            appId: "1:289646147734:web:c13d029f86dbc5181ceab7"
         };
         firebase.initializeApp(firebaseConfig);
-        const db = firebase.database().ref("sensaive_core_v1");
+        const db = firebase.database().ref("sensaive_final_system");
 
-        let lastVoice = "";
+        let lastVoiceId = "";
 
+        // Cho phép AI nói
+        function unlockAudio() {
+            let s = new SpeechSynthesisUtterance("Hệ thống trí tuệ nhân tạo Sensaive đã sẵn sàng.");
+            s.lang = 'vi-VN';
+            speechSynthesis.speak(s);
+            document.getElementById('audio-unlock').style.display = 'none';
+        }
+
+        // Đọc dữ liệu Realtime
         db.on("value", (snapshot) => {
             const data = snapshot.val();
             if(!data) return;
 
-            // Đổ số liệu ra màn hình
-            document.getElementById("lbl-hr").innerText = data.heartRate;
-            document.getElementById("lbl-spo2").innerText = data.spo2;
-            document.getElementById("lbl-rr").innerText = data.respiratoryRate;
-            document.getElementById("lbl-temp").innerText = data.temperature;
+            // 1. Cập nhật số
+            document.getElementById("val-hr").innerText = data.hr;
+            document.getElementById("val-spo2").innerText = data.spo2;
+            document.getElementById("val-rr").innerText = data.rr;
+            document.getElementById("val-temp").innerText = data.temp;
+            document.getElementById("val-bp").innerText = data.bp;
 
-            // Tạo mã HL7 FHIR
-            document.getElementById("fhir-code").innerText = JSON.stringify({
+            // 2. Tạo FHIR JSON
+            document.getElementById("fhir-json").innerText = JSON.stringify({
                 resourceType: "Patient",
+                id: "HUIT-NTT-2026",
                 name: "Nguyen Van Minh",
-                vitals: { HR: data.heartRate, SpO2: data.spo2, Status: "Active" }
+                vitals: { HR: data.hr, SpO2: data.spo2, RR: data.rr, Temp: data.temp, BP: data.bp }
             }, null, 2);
 
-            // Xử lý AI đọc giọng nói (Voice-First AI)
-            if (data.voiceCommand && data.voiceCommand !== lastVoice) {
-                lastVoice = data.voiceCommand;
-                let speech = new SpeechSynthesisUtterance(data.voiceCommand);
-                speech.lang = 'vi-VN';
-                window.speechSynthesis.speak(speech);
+            // 3. Triage AI Voice (Chỉ đọc khi có thông điệp mới)
+            if (data.voiceTrigger && data.voiceTrigger !== lastVoiceId) {
+                lastVoiceId = data.voiceTrigger;
+                let actualMessage = data.voiceTrigger.split("||")[1];
+                if (actualMessage) {
+                    let speech = new SpeechSynthesisUtterance(actualMessage);
+                    speech.lang = 'vi-VN';
+                    speech.rate = 1.0;
+                    speechSynthesis.speak(speech);
+                }
             }
 
-            // Xử lý Giao diện Triage Cấp độ
+            // 4. Xử lý Cấp độ Triage (Màu sắc & SOS)
             let lvl = data.triageLevel || 1;
-            let badge = document.getElementById("badge-triage");
+            let badge = document.getElementById("triage-badge");
             let sos = document.getElementById("sos-screen");
 
             if (lvl === 3) {
                 sos.style.display = "flex";
             } else {
                 sos.style.display = "none";
-                document.getElementById("box-hr").className = data.heartRate > 100 ? "v-box warn" : "v-box";
+                document.getElementById("box-hr").className = (data.hr > 100 || data.hr < 60) ? "v-box warn" : "v-box";
                 document.getElementById("box-spo2").className = data.spo2 < 95 ? "v-box warn" : "v-box";
 
                 if (lvl === 2) {
-                    badge.innerText = "CẤP 2: CẢNH BÁO LÂM SÀNG";
-                    badge.style.background = "#F59E0B";
+                    badge.innerText = "CẤP 2: THEO DÕI ĐẶC BIỆT";
+                    badge.style.background = "var(--yellow)";
                 } else {
-                    badge.innerText = "CẤP 1: AN TOÀN";
-                    badge.style.background = "#10B981";
+                    badge.innerText = "CẤP 1: AN TOÀN LÂM SÀNG";
+                    badge.style.background = "var(--green)";
                 }
             }
         });
+
+        // Điều khiển Modal
+        function openModal(id) { document.getElementById(id).style.display = "flex"; }
+        function closeModal(id) { document.getElementById(id).style.display = "none"; }
+        function checkPass() {
+            if (document.getElementById("pass-input").value === "1234") {
+                document.getElementById("lock-screen").style.display = "none";
+                document.getElementById("history-screen").style.display = "block";
+            } else {
+                alert("Sai mật khẩu bác sĩ!");
+            }
+        }
     </script>
 </body>
 </html>
+
+```
