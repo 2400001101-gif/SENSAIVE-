@@ -3,66 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sensaive Tier 2 - Phone View</title>
+    <title>Sensaive Tier 2 - Digital Nursing Interface</title>
     <style>
-        body { font-family: Arial, sans-serif; background: #f8fafc; color: #0f172a; padding: 15px; margin: 0; }
-        .header { background: white; padding: 15px; border-radius: 12px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; margin-bottom: 15px; }
-        .status-text { font-weight: bold; color: #10b981; font-size: 16px; margin-top: 5px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        :root {
+            --bg: #F8FAFC;
+            --card: #FFFFFF;
+            --txt: #0F172A;
+            --sub: #64748B;
+            --p1: #10B981;
+            --p2: #F59E0B;
+            --p3: #EF4444;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg); color: var(--txt); padding: 15px; min-height: 100vh; padding-bottom: 50px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; background: var(--card); padding: 15px; border-radius: 14px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .app-title { font-weight: 700; font-size: 20px; color: #0284C7; }
+        .badge-status { padding: 6px 14px; border-radius: 30px; font-weight: 700; font-size: 11px; text-transform: uppercase; color: #FFF; }
         
-        .box-vital { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.03); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #e2e8f0; }
-        .vital-title { font-size: 14px; color: #64748b; font-weight: bold; }
-        .vital-value { font-size: 32px; font-weight: bold; color: #0f172a; }
+        .patient-box { background: var(--card); padding: 16px; border-radius: 16px; border: 1px solid #E2E8F0; margin-bottom: 15px; }
+        .p-meta { display: flex; gap: 10px; margin-top: 8px; font-size: 12px; }
+        .meta-pill { background: #F1F5F9; padding: 4px 10px; border-radius: 6px; color: var(--sub); font-weight: 600; }
+        .allergy-alert { margin-top: 10px; background: #FFF9E6; border-left: 4px solid var(--p2); padding: 10px; border-radius: 4px; font-size: 12px; line-height: 1.5; }
+
+        .vitals-container { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        .v-card { background: var(--card); padding: 15px; border-radius: 16px; border: 1px solid #E2E8F0; position: relative; overflow: hidden; transition: all 0.3s ease; }
+        .v-card.warn { border-color: var(--p2); background: #FFFDF5; }
+        .v-title { font-size: 11px; font-weight: 700; color: var(--sub); text-transform: uppercase; }
+        .v-value { font-size: 28px; font-weight: 700; margin: 4px 0; }
+        .v-unit { font-size: 11px; color: var(--sub); }
+        .v-icon { position: absolute; right: 12px; top: 12px; font-size: 18px; }
+
+        .heavy-computation-box { background: #0F172A; color: #38BDF8; padding: 15px; border-radius: 16px; margin-bottom: 15px; }
+        .graph-title { font-size: 11px; text-transform: uppercase; color: #94A3B8; font-weight: 700; margin-bottom: 8px; display: flex; justify-content: space-between; }
+        .canvas-sim { width: 100%; height: 50px; border-bottom: 1px dashed #334155; position: relative; overflow: hidden; }
+        .ecg-line { width: 100%; height: 2px; background: #10B981; position: absolute; top: 50%; animation: ecgMove 2s linear infinite; }
+        .spectro-bars { display: flex; gap: 3px; align-items: flex-end; height: 40px; margin-top: 5px; }
+        .spec-bar { flex: 1; background: #6D28D9; height: 40%; animation: pulseBar 0.8s ease-in-out infinite alternate; }
+        .spec-bar:nth-child(even) { background: #38BDF8; }
+
+        .btn-action { width: 100%; padding: 14px; background: #0F172A; color: white; border: none; border-radius: 12px; font-weight: 600; font-size: 13px; margin-bottom: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
         
-        /* Chế độ báo động Đỏ cấp 3 toàn màn hình */
-        #fall-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #ef4444; color: white; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; text-align: center; box-sizing: border-box; padding: 20px; }
-        #fall-screen h1 { font-size: 36px; animation: blink 1s infinite; margin: 0; }
-        @keyframes blink { 50% { opacity: 0.3; } }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.55); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
+        .modal-body { background: white; padding: 20px; border-radius: 20px; width: 100%; max-width: 400px; position: relative; }
+        .close-icon { position: absolute; right: 15px; top: 15px; font-size: 20px; cursor: pointer; color: var(--sub); }
+        pre { background: #0F172A; color: #38BDF8; padding: 12px; border-radius: 8px; font-size: 11px; overflow-x: auto; max-height: 250px; text-align: left; margin-top: 10px; }
+
+        #triage-level3-screen { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: var(--p3); color: white; z-index: 9999; flex-direction: column; justify-content: center; align-items: center; padding: 25px; text-align: center; }
+        #triage-level3-screen h1 { font-size: 42px; font-weight: 800; animation: flashText 0.8s infinite; }
+        .sos-status-panel { background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255, 255, 255, 0.3); padding: 15px; border-radius: 12px; font-size: 13px; margin-top: 20px; max-width: 90%; line-height: 1.6; }
+        
+        @keyframes ecgMove { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes pulseBar { from { height: 20%; } to { height: 100%; } }
+        @keyframes flashText { 50% { opacity: 0.3; } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <h2 style="margin:0; color:#0284c7;">🩺 Sensaive Mobile</h2>
-        <div id="app-status" class="status-text">🟢 Sinh hiệu ổn định</div>
+    <div class="top-bar">
+        <div class="app-title">🩺 Sensaive Core</div>
+        <div id="triage-badge" class="badge-status" style="background: var(--p1);">CẤP 1: BIỂU MẪU SỨC KHỎE ổn định</div>
     </div>
 
-    <div style="padding: 5px; font-size: 13px; color: #64748b; margin-bottom: 5px;">Bệnh nhân: <b>Nguyễn Văn Minh</b></div>
-
-    <div class="box-vital" id="card-hr">
-        <div>
-            <div class="vital-title">❤️ NHỊP TIM (HR)</div>
-            <div class="vital-value" id="view-hr">--</div>
+    <div class="patient-box">
+        <h2 style="font-size: 16px; font-weight: 700;">Người dùng: Nguyễn Văn Minh</h2>
+        <div style="font-size: 11px; color: var(--sub);">ID Thiết bị liên kết: #SSV-NTT-01</div>
+        <div class="p-meta">
+            <span class="meta-pill">Chiều cao: 1m72</span>
+            <span class="meta-pill">Cân nặng: 68kg</span>
+            <span class="meta-pill">BMI: 23.0</span>
         </div>
-        <div style="font-size: 12px; color: #64748b;">BPM</div>
-    </div>
-
-    <div class="box-vital" id="card-spo2">
-        <div>
-            <div class="vital-title">💧 NỒNG ĐỘ OXY (SpO2)</div>
-            <div class="vital-value" id="view-spo2">--</div>
+        <div class="allergy-alert">
+            ⚠️ <b>Tiền sử dị ứng khẩn cấp:</b> Mẫn cảm cực độ thành phần kháng sinh Penicillin. Có tiền sử Hen suyễn lâm sàng mạn tính.
         </div>
-        <div style="font-size: 12px; color: #64748b;">%</div>
     </div>
 
-    <div class="box-vital">
-        <div>
-            <div class="vital-title">🩸 HUYẾT ÁP</div>
-            <div class="vital-value" id="view-bp">--/--</div>
+    <div class="vitals-container">
+        <div class="v-card" id="box-hr">
+            <div class="v-title">Nhịp tim</div>
+            <div class="v-value" id="lbl-hr">--</div>
+            <div class="v-unit">BPM</div>
+            <div class="v-icon">❤️</div>
         </div>
-        <div style="font-size: 12px; color: #64748b;">mmHg</div>
+        <div class="v-card" id="box-spo2">
+            <div class="v-title">Oxy trong máu</div>
+            <div class="v-value" id="lbl-spo2">--</div>
+            <div class="v-unit">% SpO2</div>
+            <div class="v-icon">🫁</div>
+        </div>
+        <div class="v-card" id="box-rr">
+            <div class="v-title">Tần số nhịp thở</div>
+            <div class="v-value" id="lbl-rr">--</div>
+            <div class="v-unit">lần/phút</div>
+            <div class="v-icon">🌬️</div>
+        </div>
+        <div class="v-card" id="box-temp">
+            <div class="v-title">Nhiệt độ cơ thể</div>
+            <div class="v-value" id="lbl-temp">--</div>
+            <div class="v-unit">°C</div>
+            <div class="v-icon">🌡️</div>
+        </div>
+    </div>
+    <div class="vitals-container" style="grid-template-columns: 1fr;">
+        <div class="v-card" id="box-bp">
+            <div class="v-title">Huyết áp động mạch</div>
+            <div class="v-value" id="lbl-bp">--/--</div>
+            <div class="v-unit">mmHg</div>
+            <div class="v-icon">🩸</div>
+        </div>
     </div>
 
-    <div id="fall-screen">
-        <h1>🚨 PHÁT HIỆN TÉ NGÃ 🚨</h1>
-        <p style="font-weight: bold; margin-top: 10px;">Hệ thống ghi nhận va chạm mạnh và trạng thái bất động!</p>
-        <p style="font-size: 13px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; max-width: 80%;">Đang bẻ lộ trình truyền dữ liệu chuẩn FHIR lên tổng đài y tế cấp cứu 115...</p>
+    <div class="heavy-computation-box">
+        <div class="graph-title"><span>📡 Tách toán xử lý đồ họa tại Biên (Tier 2 Node)</span><span>ECG Realtime</span></div>
+        <div class="canvas-sim"><div class="ecg-line"></div></div>
+        <div class="graph-title" style="margin-top: 10px;"><span>🎛️ Thuật toán xử lý cụm đèn quang phổ NIR LED</span><span>Đang quét...</span></div>
+        <div class="spectro-bars">
+            <div class="spec-bar"></div><div class="spec-bar"></div><div class="spec-bar"></div><div class="spec-bar"></div>
+        </div>
+    </div>
+
+    <button class="btn-action" id="btn-open-fhir" style="background: #0284C7;">📄 Kết xuất Hồ sơ Bệnh sử số chuẩn HL7 FHIR</button>
+    <button class="btn-action" id="btn-open-knight" style="background: #6D28D9;">🛰️ Kích hoạt Radar quét mạng lưới Hiệp sĩ thực địa</button>
+
+    <div id="fhir-modal" class="modal-overlay">
+        <div class="modal-body">
+            <span class="close-icon" id="btn-close-fhir">&times;</span>
+            <h3 style="color: #0284C7; font-size:15px; margin-bottom:5px;">📋 HL7 FHIR Resource Payload</h3>
+            <pre id="fhir-json-view"></pre>
+        </div>
+    </div>
+
+    <div id="knight-modal" class="modal-overlay">
+        <div class="modal-body" style="text-align: center;">
+            <span class="close-icon" id="btn-close-knight">&times;</span>
+            <h3 style="color: #6D28D9; font-size:15px; margin-bottom:5px;">🛰️ Sensaive GPS Radar Network</h3>
+            <div style="font-size: 32px; margin: 10px 0;">📍</div>
+            <div style="font-size: 13px; font-weight: bold; color: #6D28D9;">Phát hiện thấy 2 "Hiệp sĩ ứng cứu" lân cận trong bán kính 250m đang nhận tín hiệu định vị tọa độ từ SOS Gateway!</div>
+        </div>
+    </div>
+
+    <div id="triage-level3-screen">
+        <h1>🚨 SOS TRIAGE: LEVEL 3 🚨</h1>
+        <div style="font-weight: 700; font-size: 16px; margin-top: 10px;">BÁO ĐỘNG ĐỎ NGUY KỊCH - TỰ ĐỘNG KÍCH HOẠT 115</div>
+        <div class="sos-status-panel" id="sos-message-details">...</div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
         import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-        // Tích hợp cấu hình Firebase thật (Trùng khớp hoàn toàn với file phát tín hiệu)
         const firebaseConfig = {
             apiKey: "AIzaSyCbaNZMLJqsH1W3VAa81GaaY7ocaTbZeqw",
             authDomain: "sensaive-demo.firebaseapp.com",
@@ -75,39 +164,65 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        let windowLastSpeechPayload = "";
 
-        // LẮNG NGHE BIẾN THIÊN REALTIME LIÊN TỤC 24/7 TỪ FIREBASE
-        onValue(ref(db, "sensaive_data"), (snapshot) => {
+        onValue(ref(db, "sensaive_hub"), (snapshot) => {
             const data = snapshot.val();
             if(!data) return;
 
-            // Cập nhật số liệu hiển thị tức thì ra màn hình điện thoại
-            document.getElementById("view-hr").innerText = data.heartRate || "--";
-            document.getElementById("view-spo2").innerText = data.spo2 || "--";
-            document.getElementById("view-bp").innerText = data.bloodPressure || "--/--";
+            document.getElementById("lbl-hr").innerText = data.heartRate || "--";
+            document.getElementById("lbl-spo2").innerText = data.spo2 || "--";
+            document.getElementById("lbl-rr").innerText = data.respiratoryRate || "--";
+            document.getElementById("lbl-temp").innerText = data.temperature || "--";
+            document.getElementById("lbl-bp").innerText = data.bloodPressure || "--/--";
 
-            let txtStatus = document.getElementById("app-status");
-            let fallScreen = document.getElementById("fall-screen");
+            // Tạo Hồ sơ bệnh án điện tử chuẩn HL7 FHIR thời gian thực
+            const fhirResource = {
+                resourceType: "Bundle",
+                patient: { name: "Nguyễn Văn Minh", recordID: "HUIT-NTT-2026", allergies: ["Penicillin"] },
+                observation: {
+                    heartRate: data.heartRate,
+                    spo2: data.spo2,
+                    bloodPressure: data.bloodPressure
+                },
+                status: data.fhirStatus || "ACTIVE"
+            };
+            document.getElementById("fhir-json-view").textContent = JSON.stringify(fhirResource, null, 2);
 
-            // Logic xử lý đồ họa giao diện động dựa trên 3 mức độ nguy cơ (Triage)
-            if(data.triageLevel === 3) {
+            // Kích hoạt giọng nói đàm thoại "Điều dưỡng số"
+            if (data.triggerVoice && windowLastSpeechPayload !== data.triggerVoice) {
+                windowLastSpeechPayload = data.triggerVoice;
+                let ttsVoice = new SpeechSynthesisUtterance(data.triggerVoice);
+                ttsVoice.lang = 'vi-VN';
+                window.speechSynthesis.speak(ttsVoice);
+            }
+
+            let triageLvl = data.triageLevel || 1;
+            let badge = document.getElementById("triage-badge");
+            let fallScreen = document.getElementById("triage-level3-screen");
+
+            if (triageLvl === 3) {
+                document.getElementById("sos-message-details").innerText = data.triggerVoice || "Phát hiện chấn thương té ngã.";
                 fallScreen.style.display = "flex";
             } else {
                 fallScreen.style.display = "none";
-                
-                if(data.triageLevel === 2) {
-                    txtStatus.innerText = "🟡 Cảnh báo sinh hiệu bất thường";
-                    txtStatus.style.color = "#f59e0b";
-                    document.getElementById("card-hr").style.background = "#fffbeb";
-                    document.getElementById("card-spo2").style.background = "#fffbeb";
+                document.getElementById("box-hr").className = "v-card " + (data.heartRate > 100 ? "warn" : "");
+                document.getElementById("box-spo2").className = "v-card " + (data.spo2 < 95 ? "warn" : "");
+
+                if (triageLvl === 2) {
+                    badge.innerText = "CẤP 2: NGHI NGỜ / THEO DÕI ĐẶC BIỆT";
+                    badge.style.backgroundColor = "var(--p2)";
                 } else {
-                    txtStatus.innerText = "🟢 Sinh hiệu ổn định";
-                    txtStatus.style.color = "#10b981";
-                    document.getElementById("card-hr").style.background = "white";
-                    document.getElementById("card-spo2").style.background = "white";
+                    badge.innerText = "CẤP 1: BIỂU MẪU SỨC KHỎE ỔN ĐỊNH";
+                    badge.style.backgroundColor = "var(--p1)";
                 }
             }
         });
+
+        document.getElementById("btn-open-fhir").addEventListener("click", () => document.getElementById("fhir-modal").style.display = "flex");
+        document.getElementById("btn-close-fhir").addEventListener("click", () => document.getElementById("fhir-modal").style.display = "none");
+        document.getElementById("btn-open-knight").addEventListener("click", () => document.getElementById("knight-modal").style.display = "flex");
+        document.getElementById("btn-close-knight").addEventListener("click", () => document.getElementById("knight-modal").style.display = "none");
     </script>
 </body>
 </html>
